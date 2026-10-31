@@ -1,0 +1,30 @@
+name: Deploy Charso to up.platenumber9.ir
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: charso-web-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy website to subdomain document root
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy www to up.platenumber9.ir
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: www/
+          server-dir: public_html/up/
